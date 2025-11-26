@@ -132,7 +132,7 @@ window.addEventListener('load', () => {
             if (e.turno.estado === "pendiente") {
                 const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
                 if (turnoDOM) turnoDOM.remove();
-                contPendientes.innerHTML += renderTurno(e.turno) + contPendiente.innerHTML;
+                contPendientes.innerHTML += renderTurno(e.turno) + contPendientes.innerHTML;
             }
 
             if (e.turno.estado === "en_curso") {
@@ -140,7 +140,6 @@ window.addEventListener('load', () => {
                 if (turnoDOM) turnoDOM.remove();
                 contEnCurso.innerHTML =
                     renderTurno(e.turno) + contEnCurso.innerHTML;
-                    limpiarPendientesVacios();
             }
 
             if (e.turno.estado === "finalizado") {

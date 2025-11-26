@@ -8,6 +8,8 @@ use App\Events\TurnoCreado;
 use App\Events\TurnoFinalizado;
 use App\Models\Turno;
 use App\Mail\SatisfactionMail;
+use App\Mail\TurnoCreadoMail;
+use Illuminate\Support\Facades\Mail;
 
 class TurnoController extends Controller
 {
@@ -38,9 +40,14 @@ class TurnoController extends Controller
 
  $turno = \App\Models\Turno::create(array_merge($data, ['codigo' => $codigo])); // <--- POSIBLE PUNTO DE FALLO
 
+ // Enviar mail al cliente
+    if ($turno->email) {
+        Mail::to($turno->email)->send(new TurnoCreadoMail($turno));
+    }
+
 event(new \App\Events\TurnoCreado($turno));
 
- return response()->json(['message' => 'Turno creado y evento emitido'], 200);
+return response()->json(['message' => 'Turno creado y evento emitido'], 200);
 }
 
     public function siguiente(Request $request) // Siguiente turno
@@ -68,7 +75,10 @@ event(new \App\Events\TurnoCreado($turno));
 
         broadcast(new \App\Events\TurnoFinalizado($turno));
 
-
+// Enviar mail de satisfacción
+    if ($turno->email) {
+        Mail::to($turno->email)->send(new SatisfactionMail($turno));
+    }
 
         return response()->json([
         'ok' => true,
