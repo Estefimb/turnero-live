@@ -1,5 +1,6 @@
+
 @if(count($turnos) === 0)
-    <p>No hay turnos en este estado.</p>
+  
 @else
     <ul>
         @foreach($turnos as $turno)
@@ -10,14 +11,7 @@
                 — {{ ucfirst($turno->tipo) }}
                 — {{ $turno->corresponde ?? 'Sin asignar' }}
 
-                {{-- Botón SOLO si está pendiente --}}
-                @if($turno->estado === 'pendiente')
-                    <button
-                        class="bg-blue-600 text-white px-3 py-1 rounded ml-4"
-                        onclick="siguienteTurno({{ $turno->id }})">
-                        Siguiente Turno
-                    </button>
-                @endif
+                
 
                 {{-- Botón SOLO si está en curso --}}
                 @if($turno->estado === 'en_curso')
@@ -40,32 +34,42 @@ function siguienteTurno() {
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
             "Content-Type": "application/json"
-        }
+        },
+        
     })
     .then(r => r.json())
     .then(data => {
         console.log("Turno actualizado:", data);
-        location.reload(); // recarga panel operador
+
+         contPendientes.innerHTML = '';
+        data.pendientes.forEach(turno => {
+            contPendientes.innerHTML += renderTurno(turno);
+        });
+
+        // Actualizamos en curso
+        contEnCurso.innerHTML = '';
+        if(data.enCurso){
+            contEnCurso.innerHTML = renderTurno(data.enCurso);
+        }
     });
 }
 
 function finalizarTurno(id) {
-    const email = prompt("Ingrese email del cliente para la encuesta (opcional):");
-
     fetch(`/turnos/${id}/finalizar`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            email: email || null
-        })
+        body: JSON.stringify({})
     })
     .then(r => r.json())
     .then(data => {
         console.log("Turno finalizado:", data);
-        location.reload();
-    });
+    })
+    .catch(err => console.error(err));
 }
+
+
+
 </script>

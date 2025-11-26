@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Events\TurnoActualizado;
+use App\Events\TurnoCreado;
+use App\Events\TurnoFinalizado;
 use App\Models\Turno;
-
+use App\Mail\SatisfactionMail;
 
 class TurnoController extends Controller
 {
@@ -19,22 +21,7 @@ class TurnoController extends Controller
         return view('turnos.receptor');
     }
 
-    //public function emitir(Request $request)
-    //{
-        //$data = $request->validate([
-            //'codigo' => ['required', 'string', 'max:20'],
-            //'caja'   => ['required', 'string', 'max:50'],
-            //'mensaje' => ['nullable', 'string', 'max:200'],
-        //]);
-
-        //event(new TurnoActualizado(
-            //$data['codigo'],
-            //$data['caja'],
-            //$data['mensaje'] ?? null
-        //));
-
-        //return back()->with('ok', 'Turno emitido correctamente.');
-    //}
+    
 
     //Crear turno
  public function store(Request $request)// Crear tunno
@@ -77,17 +64,18 @@ event(new \App\Events\TurnoCreado($turno));
         $request->validate(['email'=>'nullable|email']);
 
         $turno->estado = 'finalizado';
-        if ($request->email) $turno->email = $request->email;
         $turno->save();
 
-        if ($turno->email) {
-            \Mail::to($turno->email)->send(new \App\Mail\SatisfactionMail($turno));
+        broadcast(new \App\Events\TurnoFinalizado($turno));
+
+
+
+        return response()->json([
+        'ok' => true,
+        'turno' => $turno
+        ]);
         }
 
-        \Log::info("EVENTO ENVIADO", ['turno' => $turno]);
-        event(new \App\Events\TurnoActualizado($turno));
-        return response()->json($turno);
-    }
 
     public function indexOperator()
     {

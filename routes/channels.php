@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::routes();
 Broadcast::channel('turnos', fn() => true);
 
-Broadcast::channel('turnos', function () {
+Broadcast::channel('turnos', function ($user) {
     \Log::info("ALGUIEN SE SUSCRIBIÓ AL CANAL TURNOS");
     return true;
 });

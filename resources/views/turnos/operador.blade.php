@@ -7,6 +7,8 @@
     }
 </style>
 
+@vite(['resources/js/echo.js'])
+
 <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
     <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center border-b-2 pb-2">Panel de Control del Operador</h1>
 
@@ -27,6 +29,12 @@
         <!-- ================================================= -->
         <div class="lg:col-span-2 space-y-6">
             <h2 class="text-3xl font-extrabold text-gray-800 pb-2 border-b-2">Cola de Turnos</h2>
+
+            <button onclick="siguienteTurno()" 
+                class="bg-blue-700 text-white px-4 py-2 rounded">
+                Siguiente Turno
+            </button>
+
 
             <!-- Turnos Pendientes (Cola) -->
             <div id="cola-pendientes" class="bg-white p-6 shadow-xl rounded-xl border-t-4 border-yellow-500 transition duration-300 hover:shadow-2xl">
@@ -64,3 +72,94 @@
         
     </div>
 </div>
+
+<script>
+window.addEventListener('load', () => {
+
+    if (!window.Echo) {
+        console.error("Echo no inicializado");
+        return;
+    }
+
+    const contPendientes = document.querySelector('#cola-pendientes .space-y-3');
+    const contEnCurso = document.querySelector('#cola-en-curso .space-y-3');
+    const contFinalizados = document.querySelector('#cola-finalizados .space-y-3');
+
+    const renderTurno = (turno) => {
+    let botones = '';
+
+    if (turno.estado === 'pendiente') {
+        botones = `
+            <button 
+                class="bg-blue-600 text-white px-3 py-1 rounded ml-4"
+                onclick="siguienteTurno(${turno.id})">
+                Siguiente Turno
+            </button>`;
+    }
+
+    if (turno.estado === 'en_curso') {
+        botones = `
+            <button 
+                class="bg-red-600 text-white px-3 py-1 rounded ml-4"
+                onclick="finalizarTurno(${turno.id})">
+                Finalizar Turno
+            </button>`;
+    }
+
+    return `
+        <li id="turno-${turno.id}" class="mb-3 p-3 border rounded">
+            <strong>${turno.codigo}</strong> — ${turno.nombre ?? ''} (${turno.dni ?? ''})
+            — ${turno.tipo ?? ''} — ${turno.corresponde ?? 'Sin asignar'}
+            ${botones}
+        </li>
+    `;
+};
+
+
+    window.Echo.channel('turnos')
+        .listen('.TurnoCreado', (e) => {
+            console.log("CREADO:", e.turno);
+            contPendientes.innerHTML +=
+                renderTurno(e.turno) + contPendientes.innerHTML;
+        })
+
+        .listen('.TurnoActualizado', (e) => {
+            console.log("ACTUALIZADO:", e.turno);
+
+            const turnoDOMPend = document.getElementById(`turno-${e.turno.id}`);
+            if (turnoDOMPend) turnoDOMPend.remove();
+
+            if (e.turno.estado === "pendiente") {
+                const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
+                if (turnoDOM) turnoDOM.remove();
+                contPendientes.innerHTML += renderTurno(e.turno) + contPendiente.innerHTML;
+            }
+
+            if (e.turno.estado === "en_curso") {
+                const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
+                if (turnoDOM) turnoDOM.remove();
+                contEnCurso.innerHTML =
+                    renderTurno(e.turno) + contEnCurso.innerHTML;
+                    limpiarPendientesVacios();
+            }
+
+            if (e.turno.estado === "finalizado") {
+                const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
+                if (turnoDOM) turnoDOM.remove();
+                contFinalizados.innerHTML =
+                renderTurno(e.turno) + contFinalizados.innerHTML;
+            }
+        })
+
+        .listen('.TurnoFinalizado', (e) => {
+            console.log("FINALIZADO", e.turno);
+            const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
+            if (turnoDOM) turnoDOM.remove();
+            contFinalizados.innerHTML =
+                renderTurno(e.turno) + contFinalizados.innerHTML;
+        });
+
+});
+
+
+</script>

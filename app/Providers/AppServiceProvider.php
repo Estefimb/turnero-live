@@ -9,18 +9,18 @@ use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
-    protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
+    //protected $listen = [
+        //Registered::class => [
+            //SendEmailVerificationNotification::class,
+        //],
         
         // ** CONFIGURACIÓN PARA EL CORREO DE SATISFACCIÓN **
         // Cuando el evento 'TurnoActualizado' es disparado...
-        \App\Events\TurnoActualizado::class => [
+       // \App\Events\TurnoActualizado::class => [
             // ...se ejecuta este Listener para enviar el correo si el turno está finalizado.
-            \App\Listeners\SendSatisfactionSurvey::class,
-        ],
-    ];
+            //\App\Listeners\SendSatisfactionSurvey::class,
+        //],
+    //];
 
     /**
      * Register any events for your application.

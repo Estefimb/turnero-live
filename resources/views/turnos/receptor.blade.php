@@ -21,7 +21,7 @@
             animation: pulse-call 2s infinite;
         }
     </style>
-    @vite(['resources/js/bootstrap.js'])
+    @vite(['resources/js/echo.js'])
 </head>
 <body>
     
@@ -166,6 +166,7 @@
                 
                 // TODO: Aquí se podría añadir lógica para cargar la lista inicial de turnos (GET /turnos/estado)
             });
+            
     });
     </script>
 </body>
