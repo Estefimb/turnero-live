@@ -16,7 +16,17 @@
                 {{-- Botón SOLO si está en curso --}}
                 @if($turno->estado === 'en_curso')
                     <button
-                        class="bg-red-600 text-white px-3 py-1 rounded ml-4"
+                        class="
+    bg-red-600 hover:bg-red-700 
+    text-white font-semibold 
+    px-3.5 py-1.5 
+    rounded-md 
+    text-sm 
+    shadow-md hover:shadow-lg 
+    transition-all duration-200 
+    hover:scale-[1.03]
+"
+
                         onclick="finalizarTurno({{ $turno->id }})">
                         Finalizar Turno
                     </button>

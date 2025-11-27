@@ -1,5 +1,5 @@
 <div class="p-6 bg-white shadow-2xl rounded-xl border border-gray-200">
-    <h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">Generar Nuevo Turno</h2>
+    
     
     <!-- Div para mostrar mensajes de estado (éxito o error) sin recargar la página -->
     <div id="status-message" class="mb-4 p-4 rounded text-sm hidden" role="alert"></div>

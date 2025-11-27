@@ -31,8 +31,8 @@
         <!-- FORMULARIO -->
         <!-- ====================== -->
         <div class="lg:col-span-1">
-            <div class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-gray-700">
-                <h2 class="text-xl font-bold mb-4 text-blue-400">➕ Crear turno</h2>
+            <div class="bg-[#161b22] p-6 rounded-2xl shadow-x2 border border-gray-300">
+                <h2 class="text-xl font-bold mb-4 text-blue-400"></h2>
                 @include('turnos.form')
             </div>
         </div>
@@ -45,12 +45,13 @@
             <!-- Botón global -->
             <button 
                 onclick="siguienteTurno()"
-                class="bg-blue-600 hover:bg-blue-700 transition px-5 py-3 rounded-xl font-semibold shadow-lg text-white">
-                ▶️ Siguiente Turno
+                type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg transform hover:scale-[1.01]">
+            Siguiente turno 
             </button>
 
             <!-- PENDIENTES -->
             <div id="cola-pendientes" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-yellow-600/60">
+                
                 <h3 class="text-2xl font-semibold flex items-center text-yellow-400 mb-4">
                     ⏳ Pendientes
                 </h3>
@@ -60,7 +61,7 @@
             </div>
 
             <!-- EN CURSO -->
-            <div id="cola-en-curso" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-blue-600/60">
+            <div id="cola-en-curso" class="bg-[#161b22] p-7  rounded-2xl shadow-xl border-gray border-blue-600/60">
                 <h3 class="text-2xl font-semibold flex items-center text-blue-400 mb-4">
                     ⚡ En curso
                 </h3>
