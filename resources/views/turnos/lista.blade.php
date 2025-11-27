@@ -35,23 +35,15 @@ function siguienteTurno() {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
             "Content-Type": "application/json"
         },
-        
     })
     .then(r => r.json())
     .then(data => {
         console.log("Turno actualizado:", data);
 
-         contPendientes.innerHTML = '';
-        data.pendientes.forEach(turno => {
-            contPendientes.innerHTML += renderTurno(turno);
-        });
-
-        // Actualizamos en curso
-        contEnCurso.innerHTML = '';
-        if(data.enCurso){
-            contEnCurso.innerHTML = renderTurno(data.enCurso);
-        }
-    });
+        // ❗ NO tocar DOM acá
+        // Los listeners de Echo actualizan todo en tiempo real
+    })
+    .catch(err => console.error(err));
 }
 
 function finalizarTurno(id) {

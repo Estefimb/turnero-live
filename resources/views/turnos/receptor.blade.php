@@ -31,7 +31,7 @@
 <body class="text-white min-h-screen flex flex-col">
 
     <!-- 👇 CONTENEDOR FLEX QUE EMPUJA EL FOOTER -->
-    <div class="flex-grow">
+    <div class="flex-grow:1">
 
         <div class="max-w-7xl mx-auto p-6">
 
@@ -98,3 +98,100 @@
 </body>
 </html>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (!window.Echo) {
+        console.error("❌ Echo no está inicializado");
+        return;
+    }
+
+    console.log("✔ Echo cargado en receptor.blade");
+
+    const contPendientes = document.getElementById("public-pendientes-list");
+    const contEnCurso = document.getElementById("public-en-curso-list");
+    const initialMsg = document.getElementById("initial-message");
+
+    // Render turno en curso
+    const renderTurnoEnCurso = (turno) => {
+        return `
+            <div id="public-turno-en-curso-${turno.id}"
+                class="p-6 rounded-xl bg-blue-900/40 border border-blue-700 shadow-lg animate-pulse-call">
+
+                <div class="grid grid-cols-2 text-center text-4xl font-bold">
+                    <div class="text-blue-300">${turno.codigo}</div>
+                    <div class="text-yellow-300">${turno.corresponde ?? '-'}</div>
+                </div>
+            </div>
+        `;
+    };
+
+    // Render turno pendiente
+    const renderTurnoPendiente = (turno) => {
+        return `
+            <div id="public-turno-${turno.id}" 
+                class="p-3 bg-gray-800/40 border border-gray-700 rounded-lg text-center">
+
+                <p class="text-lg font-semibold text-gray-200">${turno.codigo}</p>
+            </div>
+        `;
+    };
+
+    // SUSCRIPCIÓN AL CANAL
+    window.Echo.channel("turnos")
+
+        /* 📌 CUANDO SE CREA UN TURNO (se agrega a "pendientes") */
+        .listen(".TurnoCreado", (e) => {
+            const turno = e.turno;
+
+            console.log("📥 PUBLIC: Turno creado", turno);
+
+            // agregar primero en pendientes
+            contPendientes.innerHTML =
+                renderTurnoPendiente(turno) + contPendientes.innerHTML;
+        })
+
+        /* 📌 CUANDO SE ACTUALIZA UN TURNO */
+        .listen(".TurnoActualizado", (e) => {
+            const turno = e.turno;
+
+            console.log("🔄 PUBLIC: Turno actualizado", turno);
+
+            // borrar si existía en cualquier lista
+            document.getElementById(`public-turno-${turno.id}`)?.remove();
+            document.getElementById(`public-turno-en-curso-${turno.id}`)?.remove();
+
+            if (turno.estado === "pendiente") {
+                contPendientes.innerHTML =
+                    renderTurnoPendiente(turno) + contPendientes.innerHTML;
+            }
+
+            if (turno.estado === "en_curso") {
+                if (initialMsg) initialMsg.remove();
+                contEnCurso.innerHTML =
+                    renderTurnoEnCurso(turno) + contEnCurso.innerHTML;
+            }
+        })
+
+        /* 📌 CUANDO SE FINALIZA UN TURNO */
+        .listen(".TurnoFinalizado", (e) => {
+            const turno = e.turno;
+
+            console.log("✔ PUBLIC: Turno finalizado", turno);
+
+            // borrar de cualquier parte
+            document.getElementById(`public-turno-${turno.id}`)?.remove();
+            document.getElementById(`public-turno-en-curso-${turno.id}`)?.remove();
+
+            // si NO hay más turnos en curso, mostrar mensaje inicial
+            if (contEnCurso.children.length === 0) {
+                contEnCurso.innerHTML = `
+                    <p id="initial-message" class="p-4 text-center text-gray-400">
+                        <span class="text-2xl font-light">Esperando el primer llamado…</span>
+                    </p>
+                `;
+            }
+        });
+
+});
+</script>

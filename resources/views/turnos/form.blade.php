@@ -10,17 +10,17 @@
 
         <div class="space-y-1">
             <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+            <input type="text"  id="nombre" name="nombre" required class="w-full p-3 border border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
         </div>
 
         <div class="space-y-1">
             <label for="dni" class="block text-sm font-medium text-gray-700">DNI:</label>
-            <input type="text" id="dni" name="dni" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+            <input type="text" id="dni" name="dni" required class="w-full p-3 border border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
         </div>
 
         <div class="space-y-1">
             <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de turno:</label>
-            <select id="tipo" name="tipo" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 bg-white">
+            <select id="tipo" name="tipo" required class="w-full p-3 border border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 bg-white">
                 <option value="caja">Caja</option>
                 <option value="asesoria">Asesoría</option>
             </select>
@@ -28,12 +28,12 @@
 
         <div class="space-y-1">
             <label for="corresponde" class="block text-sm font-medium text-gray-700">Corresponde a:</label>
-            <input type="text" id="corresponde" name="corresponde" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+            <input type="text" id="corresponde" name="corresponde" class="w-full p-3 border border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
         </div>
 
         <div class="space-y-1">
             <label for="email" class="block text-sm font-medium text-gray-700">Email (opcional):</label>
-            <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+            <input type="email" id="email" name="email" class="w-full p-3 border border-gray-700 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
         </div>
 
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg transform hover:scale-[1.01]">

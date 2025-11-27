@@ -1,16 +1,25 @@
-<!-- Tailwind CDN (si ya tenés Tailwind en tu layout, borrá esto) -->
-<script src="https://cdn.tailwindcss.com"></script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Operador</title>
 
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #0d1117;
-    }
-</style>
+    <!-- Tailwind CDN (si tu layout ya lo trae, quitar) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-@vite(['resources/js/echo.js'])
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d1117;
+        }
+    </style>
 
-<div class="max-w-7xl mx-auto p-6 lg:p-10 text-gray-200">
+    @vite(['resources/js/echo.js'])
+</head>
+
+<body class="text-gray-700">
+
+<div class="max-w-7xl mx-auto p-6 lg:p-10">
 
     <h1 class="text-4xl font-extrabold mb-10 text-center text-white tracking-tight">
         🎛️ Panel del Operador
@@ -19,7 +28,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
         <!-- ====================== -->
-        <!-- FORMULARIO (Columna 1) -->
+        <!-- FORMULARIO -->
         <!-- ====================== -->
         <div class="lg:col-span-1">
             <div class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-gray-700">
@@ -29,7 +38,7 @@
         </div>
 
         <!-- ============================ -->
-        <!-- COLA DE TURNOS (Columna 2-3) -->
+        <!-- COLA DE TURNOS -->
         <!-- ============================ -->
         <div class="lg:col-span-2 space-y-10">
 
@@ -40,9 +49,7 @@
                 ▶️ Siguiente Turno
             </button>
 
-            <!-- =============== -->
             <!-- PENDIENTES -->
-            <!-- =============== -->
             <div id="cola-pendientes" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-yellow-600/60">
                 <h3 class="text-2xl font-semibold flex items-center text-yellow-400 mb-4">
                     ⏳ Pendientes
@@ -52,9 +59,7 @@
                 </div>
             </div>
 
-            <!-- =============== -->
             <!-- EN CURSO -->
-            <!-- =============== -->
             <div id="cola-en-curso" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-blue-600/60">
                 <h3 class="text-2xl font-semibold flex items-center text-blue-400 mb-4">
                     ⚡ En curso
@@ -64,10 +69,8 @@
                 </div>
             </div>
 
-            <!-- =============== -->
             <!-- FINALIZADOS -->
-            <!-- =============== -->
-            <div id="cola-finalizados" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-gray-600/60">
+            <div id="cola-finalizados" class="bg-[#161b22] p-6 rounded-2xl shadow-xl border border-gray-700/60">
                 <h3 class="text-2xl font-semibold flex items-center text-gray-300 mb-4">
                     ✔️ Finalizados
                 </h3>
@@ -75,22 +78,34 @@
                     @include('turnos.lista', ['turnos' => $finalizados])
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
+
+<!-- ============================ -->
+<!-- SCRIPT PRINCIPAL -->
+<!-- ============================ -->
 <script>
 window.addEventListener('load', () => {
 
     if (!window.Echo) {
-        console.error("Echo no inicializado");
+        console.error("Echo NO está inicializado");
         return;
     }
 
+    // CONTENEDORES
     const contPendientes = document.querySelector('#cola-pendientes .space-y-4');
     const contEnCurso = document.querySelector('#cola-en-curso .space-y-4');
     const contFinalizados = document.querySelector('#cola-finalizados .space-y-4');
 
+    if (!contPendientes || !contEnCurso || !contFinalizados) {
+        console.error("Error: no se encontraron contenedores en el DOM");
+        return;
+    }
+
+    // RENDER DE TURNO
     const renderTurno = (turno) => {
         let boton = '';
 
@@ -126,7 +141,11 @@ window.addEventListener('load', () => {
         `;
     };
 
+    // ============================
+    // LISTENERS BROADCASTING
+    // ============================
     window.Echo.channel('turnos')
+
         .listen('.TurnoCreado', (e) => {
             contPendientes.innerHTML =
                 renderTurno(e.turno) + contPendientes.innerHTML;
@@ -136,9 +155,8 @@ window.addEventListener('load', () => {
             document.querySelector(`#turno-${e.turno.id}`)?.remove();
 
             if (e.turno.estado === "pendiente") {
-                const turnoDOM = document.getElementById(`turno-${e.turno.id}`);
-                if (turnoDOM) turnoDOM.remove();
-                contPendientes.innerHTML += renderTurno(e.turno) + contPendientes.innerHTML;
+                contPendientes.innerHTML =
+                    renderTurno(e.turno) + contPendientes.innerHTML;
             }
 
             if (e.turno.estado === "en_curso") {
@@ -154,17 +172,19 @@ window.addEventListener('load', () => {
 
         .listen('.TurnoFinalizado', (e) => {
             document.querySelector(`#turno-${e.turno.id}`)?.remove();
+
             contFinalizados.innerHTML =
                 renderTurno(e.turno) + contFinalizados.innerHTML;
         });
-});
-    </script>
 
-    <footer class="bg-[#0e1423] text-blue-300 text-center py-4 mt-10 border-t border-blue-800/40">
-        <p class="text-sm">© 2025 Sistema de Gestión de Turnos IA-TEAM</p>
-    </footer>
+});
+</script>
+
+
+<footer class="bg-[#0e1423] text-blue-300 text-center py-4 mt-10 border-t border-blue-800/40">
+    <p class="text-sm">© 2025 Sistema de Gestión de Turnos IA-TEAM</p>
+</footer>
 
 </body>
 </html>
 
-</script>
